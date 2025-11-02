@@ -133,6 +133,10 @@ def load_data():
 
 
 df = load_data()
+st.sidebar.markdown("### 🧠 Debug Info")
+st.sidebar.write("Columns found:", list(df.columns))
+st.sidebar.write("Shape:", df.shape)
+
 
 # ---- Similarity Function ----
 def create_similarity_matrix(data):
