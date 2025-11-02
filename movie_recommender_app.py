@@ -108,15 +108,17 @@ load_css()
 # ---- Load Data ----
 @st.cache_data
 def load_data():
-    # Read CSV safely and normalize headers
-    df = pd.read_csv("movies_data.csv", on_bad_lines='skip', encoding='utf-8')
-    df.columns = df.columns.str.strip().str.lower()  # normalize case and spaces
+    # Try both delimiters (comma and tab)
+    try:
+        df = pd.read_csv("movies_data.csv", sep="\t", encoding='utf-8', on_bad_lines='skip')
+    except Exception:
+        df = pd.read_csv("movies_data.csv", sep=",", encoding='utf-8', on_bad_lines='skip')
 
-    # Drop unnecessary index column if present
+    # Clean up columns
+    df.columns = df.columns.str.strip().str.lower()
     if 'unnamed: 0' in df.columns:
         df.drop(columns=['unnamed: 0'], inplace=True)
-    
-    # Rename key columns to consistent names
+
     rename_map = {
         'movie': 'Movie',
         'overview': 'Overview',
@@ -130,6 +132,7 @@ def load_data():
     df.rename(columns=rename_map, inplace=True)
 
     return df
+
 
 
 df = load_data()
