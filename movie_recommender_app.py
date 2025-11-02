@@ -107,10 +107,15 @@ load_css()
 
 # ---- Load Data ----
 @st.cache_data
+@st.cache_data
 def load_data():
     df = pd.read_csv("movies_data.csv", on_bad_lines='skip', encoding='utf-8')
-    df.columns = df.columns.str.strip()
+    df.columns = df.columns.str.strip()  # Clean spaces
+    # Drop unwanted index column if exists
+    if 'Unnamed: 0' in df.columns:
+        df.drop(columns=['Unnamed: 0'], inplace=True)
     return df
+
 
 df = load_data()
 
