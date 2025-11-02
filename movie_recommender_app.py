@@ -119,18 +119,6 @@ def load_data():
     if 'unnamed: 0' in df.columns:
         df.drop(columns=['unnamed: 0'], inplace=True)
 
-    rename_map = {
-        'movie': 'Movie',
-        'overview': 'Overview',
-        'genre': 'Genre',
-        'certificate': 'Certificate',
-        'year': 'Year',
-        'runtime': 'Runtime',
-        'rating': 'Rating',
-        'no.of.ratings': 'No.of.Ratings'
-    }
-    df.rename(columns=rename_map, inplace=True)
-
     return df
 
 
