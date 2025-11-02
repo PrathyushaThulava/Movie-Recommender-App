@@ -107,13 +107,28 @@ load_css()
 
 # ---- Load Data ----
 @st.cache_data
-@st.cache_data
 def load_data():
+    # Read CSV safely and normalize headers
     df = pd.read_csv("movies_data.csv", on_bad_lines='skip', encoding='utf-8')
-    df.columns = df.columns.str.strip()  # Clean spaces
-    # Drop unwanted index column if exists
-    if 'Unnamed: 0' in df.columns:
-        df.drop(columns=['Unnamed: 0'], inplace=True)
+    df.columns = df.columns.str.strip().str.lower()  # normalize case and spaces
+
+    # Drop unnecessary index column if present
+    if 'unnamed: 0' in df.columns:
+        df.drop(columns=['unnamed: 0'], inplace=True)
+    
+    # Rename key columns to consistent names
+    rename_map = {
+        'movie': 'Movie',
+        'overview': 'Overview',
+        'genre': 'Genre',
+        'certificate': 'Certificate',
+        'year': 'Year',
+        'runtime': 'Runtime',
+        'rating': 'Rating',
+        'no.of.ratings': 'No.of.Ratings'
+    }
+    df.rename(columns=rename_map, inplace=True)
+
     return df
 
 
@@ -121,11 +136,16 @@ df = load_data()
 
 # ---- Similarity Function ----
 def create_similarity_matrix(data):
+    # Confirm column exists even after cleaning
+    if 'Overview' not in data.columns:
+        st.error("❌ 'Overview' column missing. Please check CSV headers or rename accordingly.")
+        st.stop()
+
     tfidf = TfidfVectorizer(stop_words='english')
     data['Overview'] = data['Overview'].fillna('')
     tfidf_matrix = tfidf.fit_transform(data['Overview'])
     return cosine_similarity(tfidf_matrix)
-
+    
 similarity_matrix = create_similarity_matrix(df)
 
 # ---- Sidebar ----
