@@ -11,10 +11,7 @@ st.set_page_config(
 )
 
 # ---- CSS for Style ----
-def load_data():
-    df = pd.read_csv("movies_data.csv", on_bad_lines='skip', encoding='utf-8')
-    df.columns = df.columns.str.strip()
-    return df
+def load_css():
     st.markdown("""
         <style>
         /* Background Gradient */
@@ -111,7 +108,7 @@ load_css()
 # ---- Load Data ----
 @st.cache_data
 def load_data():
-    df = pd.read_csv("movies_data.csv")
+    df = pd.read_csv("movies_data.csv", on_bad_lines='skip', encoding='utf-8')
     df.columns = df.columns.str.strip()
     return df
 
